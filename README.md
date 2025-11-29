@@ -2422,6 +2422,98 @@ Agar jaringan aman, terapkan aturan firewall berikut.
 4. Aktivitas mencurigakan terdeteksi di IronHills. Berdasarkan dekrit Raja, IronHills hanya boleh diakses pada Akhir Pekan (Sabtu & Minggu).
     - Akses hanya diizinkan untuk Faksi Kurcaci & Pengkhianat (Durin & Khamul) serta Faksi Manusia (Elendil & Isildur).
     - Karena hari ini adalah Rabu (Simulasikan waktu server), mereka harusnya tertolak. Gunakan curl untuk membuktikan blokir waktu ini.
+    - Ironhills
+      ```
+      #!/bin/bash
+      # IronHills - Weekend only access for specific subnets
+      
+      echo "========================================="
+      echo "Rule 4: Weekend Access Control"
+      echo "========================================="
+      
+      # Flush existing rules
+      iptables -F INPUT
+      
+      # Allow established connections
+      iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+      
+      # Allow loopback
+      iptables -A INPUT -i lo -j ACCEPT
+      
+      # Define subnets
+      # Durin (A2): 192.212.0.64/26
+      # Khamul (A3): 192.212.0.56/29
+      # Elendil & Isildur (A5): 192.212.1.0/24
+      
+      # Allow access on weekends (Saturday=6, Sunday=0) for specific subnets
+      iptables -A INPUT -p tcp --dport 80 -s 192.212.0.64/26 -m time --weekdays Sat,Sun -j ACCEPT
+      iptables -A INPUT -p tcp --dport 80 -s 192.212.0.56/29 -m time --weekdays Sat,Sun -j ACCEPT
+      iptables -A INPUT -p tcp --dport 80 -s 192.212.1.0/24 -m time --weekdays Sat,Sun -j ACCEPT
+      
+      # Drop HTTP access from these subnets on weekdays
+      iptables -A INPUT -p tcp --dport 80 -s 192.212.0.64/26 -j DROP
+      iptables -A INPUT -p tcp --dport 80 -s 192.212.0.56/29 -j DROP
+      iptables -A INPUT -p tcp --dport 80 -s 192.212.1.0/24 -j DROP
+      
+      # Allow other traffic
+      iptables -A INPUT -j ACCEPT
+      
+      echo "✓ Weekend access control configured!"
+      iptables -L INPUT -n -v --line-numbers
+      ```
+
+    - Uji
+      - Sabtu
+        ```
+        # Stop NTP service dulu (jika ada)
+        service ntp stop 2>/dev/null
+        service systemd-timesyncd stop 2>/dev/null
+        
+        # Baru set manual
+        date -s "2025-11-29 14:00:00"  # Saturday
+        
+        # Verify
+        date
+        ```
+        ```
+        #!/bin/bash
+        # Test IronHills access - Alternative methods
+        
+        echo "========================================="
+        echo "Testing IronHills Access"
+        echo "========================================="
+        
+        # Method 1: Using wget
+        echo "Method 1: Using wget"
+        wget --timeout=5 --tries=1 http://192.212.0.18 -O - 2>&1 | head -20
+        
+        echo ""
+        echo "Method 2: Test port connectivity with timeout"
+        timeout 5 bash -c 'cat < /dev/null > /dev/tcp/192.212.0.18/80' && echo "✓ Port 80 ACCESSIBLE" || echo "✗ Port 80 BLOCKED"
+        
+        echo ""
+        echo "Method 3: Using telnet"
+        (echo "GET / HTTP/1.0"; echo "") | timeout 3 telnet 192.212.0.18 80 2>&1
+        
+        echo ""
+        echo "Current day: $(date +%A)"
+        echo "Current time: $(date +%T)"
+        ```
+        <img width="780" height="719" alt="image" src="https://github.com/user-attachments/assets/7677b108-2b52-4046-8d98-9c66a75f6e1c" />
+        
+      - Dari CLIENT (Durin) - Should FAIL
+        ```
+        # Stop NTP service dulu (jika ada)
+        service ntp stop 2>/dev/null
+        service systemd-timesyncd stop 2>/dev/null
+        
+        # Baru set manual
+        date -s "2025-01-29 14:00:00"
+        
+        # Verify
+        date
+        ```
+        <img width="791" height="360" alt="image" src="https://github.com/user-attachments/assets/627b6b3a-3384-40ad-b10d-3ab480752370" />
 
 5. Sembari menunggu, pasukan berlatih di server Palantir. Akses dibatasi berdasarkan ras:
     - Faksi Elf (Gilgalad & Cirdan): Boleh akses jam 07.00 - 15.00.
