@@ -2253,12 +2253,12 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
       echo ""
       
       echo "=== CLIENT DHCP STATUS ==="
-      test_ping 192.212.0.66 "Durin (Caesar)"
-      test_ping 192.212.0.58 "Khamul (Burnice) ⚠️ TRAITOR"
-      test_ping 192.212.1.2 "Elendil (Jane)"
-      test_ping 192.212.1.3 "Isildur (Policeboo)"
-      test_ping 192.212.0.130 "Gilgalad (Ellen)"
-      test_ping 192.212.0.131 "Cirdan (Lycaon)"
+      test_ping 192.212.0.135 "Durin (Caesar)"
+      test_ping 192.212.0.60 "Khamul (Burnice) ⚠️ TRAITOR"
+      test_ping 192.212.1.6 "Elendil (Jane)"
+      test_ping 192.212.1.7 "Isildur (Policeboo)"
+      test_ping 192.212.0.134 "Gilgalad (Ellen)"
+      test_ping 192.212.0.135 "Cirdan (Lycaon)"
       echo ""
       
       echo "========================================"
