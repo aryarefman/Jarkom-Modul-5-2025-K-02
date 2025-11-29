@@ -559,8 +559,7 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
      - IronHills
         ```
         #!/bin/bash
-
-        # Konfigurasi Web Server IronHills
+        # Konfigurasi Web Server IronHills dengan DNS Configuration
         
         echo "========================================="
         echo "Configuring IronHills Web Server"
@@ -576,32 +575,10 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
         # Default gateway ke Moria
         ip route add default via 192.212.0.17
         
-        echo ""
-        echo "IronHills configuration completed"
-        echo ""
-        echo "========================================="
-        echo "Interface Status:"
-        ip -br addr show
-        echo ""
-        echo "Routing Table:"
-        ip route show
-        echo "========================================="#!/bin/bash
-        
-        # Konfigurasi Web Server IronHills
-        
-        echo "========================================="
-        echo "Configuring IronHills Web Server"
-        echo "========================================="
-        
-        # Konfigurasi IP
-        echo "Configuring interface..."
-        ip link set eth0 up
-        ip addr flush dev eth0
-        
-        ip addr add 192.212.0.18/30 dev eth0  # ke Moria via Switch2 (A1)
-        
-        # Default gateway ke Moria
-        ip route add default via 192.212.0.17
+        # DNS Configuration
+        echo "Configuring DNS..."
+        echo "nameserver 8.8.8.8" > /etc/resolv.conf
+        echo "nameserver 8.8.4.4" >> /etc/resolv.conf
         
         echo ""
         echo "IronHills configuration completed"
@@ -612,14 +589,22 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
         echo ""
         echo "Routing Table:"
         ip route show
+        echo ""
+        echo "DNS Configuration:"
+        cat /etc/resolv.conf
+        echo ""
+        echo "Testing internet:"
+        ping -c 3 8.8.8.8
+        echo ""
+        echo "Testing DNS:"
+        ping -c 3 google.com
         echo "========================================="
         ```
 
      - Palantir
         ```
         #!/bin/bash
-
-        # Konfigurasi Web Server Palantir
+        # Konfigurasi Web Server Palantir dengan DNS Configuration
         
         echo "========================================="
         echo "Configuring Palantir Web Server"
@@ -635,6 +620,11 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
         # Default gateway ke Pelargir
         ip route add default via 192.212.0.21
         
+        # DNS Configuration
+        echo "Configuring DNS..."
+        echo "nameserver 8.8.8.8" > /etc/resolv.conf
+        echo "nameserver 8.8.4.4" >> /etc/resolv.conf
+        
         echo ""
         echo "Palantir configuration completed"
         echo ""
@@ -644,14 +634,22 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
         echo ""
         echo "Routing Table:"
         ip route show
+        echo ""
+        echo "DNS Configuration:"
+        cat /etc/resolv.conf
+        echo ""
+        echo "Testing internet:"
+        ping -c 3 8.8.8.8
+        echo ""
+        echo "Testing DNS:"
+        ping -c 3 google.com
         echo "========================================="
         ```
 
      - Vilya
         ```
         #!/bin/bash
-
-        # Konfigurasi DHCP Server Vilya
+        # Konfigurasi Vilya dengan DNS Configuration
         
         echo "========================================="
         echo "Configuring Vilya DHCP Server"
@@ -667,6 +665,11 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
         # Default gateway ke Rivendell
         ip route add default via 192.212.0.49
         
+        # DNS Configuration
+        echo "Configuring DNS..."
+        echo "nameserver 8.8.8.8" > /etc/resolv.conf
+        echo "nameserver 8.8.4.4" >> /etc/resolv.conf
+        
         echo ""
         echo "Vilya configuration completed"
         echo ""
@@ -676,14 +679,22 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
         echo ""
         echo "Routing Table:"
         ip route show
+        echo ""
+        echo "DNS Configuration:"
+        cat /etc/resolv.conf
+        echo ""
+        echo "Testing internet:"
+        ping -c 3 8.8.8.8
+        echo ""
+        echo "Testing DNS:"
+        ping -c 3 google.com
         echo "========================================="
         ```
 
      - Narya
         ```
         #!/bin/bash
-
-        # Konfigurasi DNS Server Narya
+        # Konfigurasi Narya dengan DNS Configuration
         
         echo "========================================="
         echo "Configuring Narya DNS Server"
@@ -699,6 +710,11 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
         # Default gateway ke Rivendell
         ip route add default via 192.212.0.49
         
+        # DNS Configuration
+        echo "Configuring DNS..."
+        echo "nameserver 8.8.8.8" > /etc/resolv.conf
+        echo "nameserver 8.8.4.4" >> /etc/resolv.conf
+        
         echo ""
         echo "Narya configuration completed"
         echo ""
@@ -708,14 +724,22 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
         echo ""
         echo "Routing Table:"
         ip route show
+        echo ""
+        echo "DNS Configuration:"
+        cat /etc/resolv.conf
+        echo ""
+        echo "Testing internet:"
+        ping -c 3 8.8.8.8
+        echo ""
+        echo "Testing DNS:"
+        ping -c 3 google.com
         echo "========================================="
         ```
 
      - Durin
         ```
         #!/bin/bash
-
-        # Konfigurasi Client Durin (50 host / Caesar)
+        # Konfigurasi Client Durin dengan DNS Configuration (50 host / Caesar)
         
         echo "========================================="
         echo "Configuring Durin Client"
@@ -731,6 +755,11 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
         # Default gateway ke Wilderland
         ip route add default via 192.212.0.65
         
+        # DNS Configuration
+        echo "Configuring DNS..."
+        echo "nameserver 8.8.8.8" > /etc/resolv.conf
+        echo "nameserver 8.8.4.4" >> /etc/resolv.conf
+        
         echo ""
         echo "Durin configuration completed"
         echo "IP Range Available: 192.212.0.65 - 192.212.0.126"
@@ -741,14 +770,22 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
         echo ""
         echo "Routing Table:"
         ip route show
+        echo ""
+        echo "DNS Configuration:"
+        cat /etc/resolv.conf
+        echo ""
+        echo "Testing internet:"
+        ping -c 3 8.8.8.8
+        echo ""
+        echo "Testing DNS:"
+        ping -c 3 google.com
         echo "========================================="
         ```
 
      - Khamul
         ```
         #!/bin/bash
-
-        # Konfigurasi Client Khamul (5 host / Burnice) - TARGET PENGKHIANAT
+        # Konfigurasi Client Khamul dengan DNS Configuration (5 host / Burnice) - TARGET PENGKHIANAT
         
         echo "========================================="
         echo "Configuring Khamul Client"
@@ -766,6 +803,11 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
         # Default gateway ke Wilderland
         ip route add default via 192.212.0.57
         
+        # DNS Configuration
+        echo "Configuring DNS..."
+        echo "nameserver 8.8.8.8" > /etc/resolv.conf
+        echo "nameserver 8.8.4.4" >> /etc/resolv.conf
+        
         echo ""
         echo "Khamul configuration completed"
         echo "IP Range Available: 192.212.0.57 - 192.212.0.62"
@@ -777,14 +819,22 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
         echo ""
         echo "Routing Table:"
         ip route show
+        echo ""
+        echo "DNS Configuration:"
+        cat /etc/resolv.conf
+        echo ""
+        echo "Testing internet:"
+        ping -c 3 8.8.8.8
+        echo ""
+        echo "Testing DNS:"
+        ping -c 3 google.com
         echo "========================================="
         ```
 
      - Elendil
         ```
         #!/bin/bash
-
-        # Konfigurasi Client Elendil (200 host / Jane)
+        # Konfigurasi Client Elendil dengan DNS Configuration (200 host / Jane)
         
         echo "========================================="
         echo "Configuring Elendil Client"
@@ -800,6 +850,11 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
         # Default gateway ke Minastir
         ip route add default via 192.212.1.1
         
+        # DNS Configuration
+        echo "Configuring DNS..."
+        echo "nameserver 8.8.8.8" > /etc/resolv.conf
+        echo "nameserver 8.8.4.4" >> /etc/resolv.conf
+        
         echo ""
         echo "Elendil configuration completed"
         echo "IP Range Available: 192.212.1.1 - 192.212.1.254"
@@ -811,14 +866,22 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
         echo ""
         echo "Routing Table:"
         ip route show
+        echo ""
+        echo "DNS Configuration:"
+        cat /etc/resolv.conf
+        echo ""
+        echo "Testing internet:"
+        ping -c 3 8.8.8.8
+        echo ""
+        echo "Testing DNS:"
+        ping -c 3 google.com
         echo "========================================="
         ```
 
      - Isildur
         ```
         #!/bin/bash
-
-        # Konfigurasi Client Isildur (30 host / Policeboo)
+        # Konfigurasi Client Isildur dengan DNS Configuration (30 host / Policeboo)
         
         echo "========================================="
         echo "Configuring Isildur Client"
@@ -834,6 +897,11 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
         # Default gateway ke Minastir
         ip route add default via 192.212.1.1
         
+        # DNS Configuration
+        echo "Configuring DNS..."
+        echo "nameserver 8.8.8.8" > /etc/resolv.conf
+        echo "nameserver 8.8.4.4" >> /etc/resolv.conf
+        
         echo ""
         echo "Isildur configuration completed"
         echo "IP Range Available: 192.212.1.1 - 192.212.1.254"
@@ -845,14 +913,22 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
         echo ""
         echo "Routing Table:"
         ip route show
+        echo ""
+        echo "DNS Configuration:"
+        cat /etc/resolv.conf
+        echo ""
+        echo "Testing internet:"
+        ping -c 3 8.8.8.8
+        echo ""
+        echo "Testing DNS:"
+        ping -c 3 google.com
         echo "========================================="
         ```
 
      - Gilgalad
         ```
         #!/bin/bash
-
-        # Konfigurasi Client Gilgalad (100 host / Ellen)
+        # Konfigurasi Client Gilgalad dengan DNS Configuration (100 host / Ellen)
         
         echo "========================================="
         echo "Configuring Gilgalad Client"
@@ -868,6 +944,11 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
         # Default gateway ke AnduinBanks
         ip route add default via 192.212.0.129
         
+        # DNS Configuration
+        echo "Configuring DNS..."
+        echo "nameserver 8.8.8.8" > /etc/resolv.conf
+        echo "nameserver 8.8.4.4" >> /etc/resolv.conf
+        
         echo ""
         echo "Gilgalad configuration completed"
         echo "IP Range Available: 192.212.0.129 - 192.212.0.254"
@@ -879,14 +960,22 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
         echo ""
         echo "Routing Table:"
         ip route show
+        echo ""
+        echo "DNS Configuration:"
+        cat /etc/resolv.conf
+        echo ""
+        echo "Testing internet:"
+        ping -c 3 8.8.8.8
+        echo ""
+        echo "Testing DNS:"
+        ping -c 3 google.com
         echo "========================================="
         ```
 
      - Cirdan
         ```
         #!/bin/bash
-
-        # Konfigurasi Client Cirdan (20 host / Lycaon)
+        # Konfigurasi Client Cirdan dengan DNS Configuration (20 host / Lycaon)
         
         echo "========================================="
         echo "Configuring Cirdan Client"
@@ -902,6 +991,11 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
         # Default gateway ke AnduinBanks
         ip route add default via 192.212.0.129
         
+        # DNS Configuration
+        echo "Configuring DNS..."
+        echo "nameserver 8.8.8.8" > /etc/resolv.conf
+        echo "nameserver 8.8.4.4" >> /etc/resolv.conf
+        
         echo ""
         echo "Cirdan configuration completed"
         echo "IP Range Available: 192.212.0.129 - 192.212.0.254"
@@ -913,6 +1007,15 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
         echo ""
         echo "Routing Table:"
         ip route show
+        echo ""
+        echo "DNS Configuration:"
+        cat /etc/resolv.conf
+        echo ""
+        echo "Testing internet:"
+        ping -c 3 8.8.8.8
+        echo ""
+        echo "Testing DNS:"
+        ping -c 3 google.com
         echo "========================================="
         ```
 
