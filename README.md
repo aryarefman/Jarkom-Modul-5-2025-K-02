@@ -2267,3 +2267,126 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
       ```
       <img width="814" height="990" alt="image" src="https://github.com/user-attachments/assets/c95266c4-0683-4ff2-a15f-1b103f97cbc9" />
 
+### Misi 2: Menemukan Jejak Kegelapan (Security Rules)
+Agar jaringan aman, terapkan aturan firewall berikut. 
+
+1. Agar jaringan Aliansi bisa terhubung ke luar (Valinor/Internet), konfigurasi routing menggunakan iptables.
+    - Syarat: Kalian TIDAK DIPERBOLEHKAN menggunakan target MASQUERADE.
+    - Osgiliath
+      ```
+      #!/bin/bash
+      # Osgiliath - NAT without MASQUERADE
+      
+      echo "========================================="
+      echo "Rule 1: NAT without MASQUERADE"
+      echo "========================================="
+      
+      # Enable IP forwarding
+      echo 1 > /proc/sys/net/ipv4/ip_forward
+      sysctl -w net.ipv4.ip_forward=1
+      
+      # Flush existing NAT rules
+      iptables -t nat -F
+      iptables -t nat -X
+      
+      # Get external IP
+      ETH0_IP=$(ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
+      
+      echo "External Interface IP: $ETH0_IP"
+      
+      # NAT using SNAT (NOT MASQUERADE)
+      iptables -t nat -A POSTROUTING -s 192.212.0.0/23 -o eth0 -j SNAT --to-source $ETH0_IP
+      
+      # Allow forwarding
+      iptables -P FORWARD ACCEPT
+      
+      echo "✓ NAT Configuration completed!"
+      ```
+      
+    - Uji
+      - Di Osgiliath - Cek NAT rules
+        ```
+        iptables -t nat -L -n -v
+        ```
+        <img width="1086" height="277" alt="image" src="https://github.com/user-attachments/assets/a7bdc8ec-e82a-4032-bc32-f3608f3d87b9" />
+
+      - Dari CLIENT (Durin, Elendil, dll)
+        ```
+        ping -c 3 8.8.8.8
+        curl -I http://google.com
+        ```
+        <img width="1784" height="473" alt="image" src="https://github.com/user-attachments/assets/c2814b10-9b5b-467d-89b5-91858f051ab4" />
+
+
+2. Karena Vilya (DHCP) menyimpan data vital, pastikan tidak ada perangkat lain yang bisa melakukan PING ke Vilya.
+    - Namun, Vilya tetap leluasa dapat mengakses/ping ke seluruh perangkat lain.
+    - Vilya
+      ```
+      #!/bin/bash
+      # Vilya - Block incoming PING
+      
+      echo "========================================="
+      echo "Rule 2: Block PING to Vilya"
+      echo "========================================="
+      
+      # Flush existing rules
+      iptables -F INPUT
+      
+      # Allow ICMP from loopback
+      iptables -A INPUT -i lo -p icmp -j ACCEPT
+      
+      # Block ICMP Echo Request from others
+      iptables -A INPUT -p icmp --icmp-type echo-request -j DROP
+      
+      # Allow established connections
+      iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+      
+      # Allow other traffic
+      iptables -A INPUT -j ACCEPT
+      
+      # Allow Vilya to ping others (OUTPUT not blocked)
+      iptables -P OUTPUT ACCEPT
+      
+      echo "✓ Configuration completed!"
+      iptables -L INPUT -n -v
+      ```
+
+    - Uji
+      - Dari CLIENT (Durin) - Should FAIL
+        ```
+        ping -c 3 192.212.0.50
+        ```
+        <img width="644" height="108" alt="image" src="https://github.com/user-attachments/assets/90c9d1de-6dbb-4f5d-8907-0a4bbe3d1266" />
+        
+      - Dari Vilya - Should SUCCESS
+        ```
+        ping -c 3 192.212.0.51  # ping Narya
+        ping -c 3 8.8.8.8       # ping Internet
+        ```
+        <img width="643" height="398" alt="image" src="https://github.com/user-attachments/assets/8177b3b1-7199-4f02-bc55-fbd674ec7f48" />
+
+3. Agar lokasi pasukan tidak bocor, hanya Vilya yang dapat mengakses Narya (DNS).
+    - Gunakan nc (netcat) untuk memastikan akses port DNS (53) ini.
+    - [Hapus aturan ini setelah pengujian agar internet lancar untuk install paket]
+    - 
+
+4. Aktivitas mencurigakan terdeteksi di IronHills. Berdasarkan dekrit Raja, IronHills hanya boleh diakses pada Akhir Pekan (Sabtu & Minggu).
+    - Akses hanya diizinkan untuk Faksi Kurcaci & Pengkhianat (Durin & Khamul) serta Faksi Manusia (Elendil & Isildur).
+    - Karena hari ini adalah Rabu (Simulasikan waktu server), mereka harusnya tertolak. Gunakan curl untuk membuktikan blokir waktu ini.
+
+5. Sembari menunggu, pasukan berlatih di server Palantir. Akses dibatasi berdasarkan ras:
+    - Faksi Elf (Gilgalad & Cirdan): Boleh akses jam 07.00 - 15.00.
+    - Faksi Manusia (Elendil & Isildur): Boleh akses jam 17.00 - 23.00.
+    - Gunakan curl untuk memastikan akses sesuai jam.
+
+6. Pasukan Manusia (Elendil) diminta menguji keamanan Palantir. Lakukan simulasi port scan dengan nmap rentang port 1-100.
+    - Web server harus memblokir scan port yang melebihi 15 port dalam waktu 20 detik.
+    - Penyerang yang terblokir tidak dapat melakukan ping, nc, atau curl ke Palantir.
+    - Catat log iptables dengan prefix "PORT_SCAN_DETECTED".
+
+7. Hari Sabtu tiba. Akses ke IronHills dibatasi untuk mencegah overload.
+    - Akses ke IronHills hanya boleh berasal dari 3 koneksi aktif per IP dalam waktu bersamaan.
+    - Lakukan uji coba beban (stress test) menggunakan curl atau ab.
+
+8. Selama uji coba, terdeteksi anomali. Setiap paket yang dikirim Vilya menuju Khamul, ternyata dibelokkan oleh sihir hitam menuju IronHills.
+    - Gunakan nc untuk memastikan alur pengalihan ini (Redirect trafik dari Client ke Server).
