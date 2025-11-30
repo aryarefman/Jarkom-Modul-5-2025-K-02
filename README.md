@@ -1384,7 +1384,7 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
     - Narya (DNS Server)
       ```
       #!/bin/bash
-      # Narya - DNS Server (FIXED untuk Internet Access)
+      # Narya - DNS Server (FIXED untuk Internet Access - WORKING VERSION)
       
       echo "========================================="
       echo "Configuring Narya as DNS Server"
@@ -1410,6 +1410,9 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
               8.8.4.4;
           };
       
+          # PENTING: Gunakan forward only untuk memaksa query ke forwarders
+          forward only;
+      
           # Allow queries dari semua subnet Alliance
           allow-query { 
               localhost;
@@ -1418,10 +1421,10 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
           
           # Listen di semua interface
           listen-on { any; };
-          listen-on-v6 { any; };
+          listen-on-v6 { none; };  # CHANGED: Disable IPv6
           
-          # Security settings
-          dnssec-validation auto;
+          # PENTING: Disable DNSSEC validation untuk avoid SERVFAIL
+          dnssec-validation no;  # CHANGED: was 'auto'
           auth-nxdomain no;
           
           # Allow recursion untuk clients
@@ -1581,7 +1584,7 @@ Tugasmu adalah membangun infrastruktur jaringan Aliansi, amankan jalur komunikas
       ping -c 2 8.8.8.8
       
       echo ""
-      echo "Test 4: Ping google.com"
+      echo "Test 4: Ping google.com (should work if DNS working)"
       ping -c 2 google.com
       
       echo ""
