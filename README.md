@@ -2998,8 +2998,7 @@ Agar jaringan aman, terapkan aturan firewall berikut.
         EOF
         
         echo -e "\n===================================================="
-        echo "SELESAI — RULE 7 SUDAH 100% BENAR & SUPER KETAT"
-        echo "Pas demo tinggal jalankan script ini → dosen langsung kasih 100+"
+        echo "COMPLETE"
         echo "===================================================="
         ```
         <img width="591" height="435" alt="Screenshot 2025-11-30 181651" src="https://github.com/user-attachments/assets/d56b8018-2346-4c00-aacc-a4c1bfeca74b" />
