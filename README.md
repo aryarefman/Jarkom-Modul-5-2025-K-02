@@ -2483,7 +2483,7 @@ Agar jaringan aman, terapkan aturan firewall berikut.
       ```
 
     - Uji
-      - Sabtu
+      - Sabtu (Durin)
         ```
         #!/bin/bash
         
@@ -2515,7 +2515,7 @@ Agar jaringan aman, terapkan aturan firewall berikut.
         ```
         <img width="681" height="446" alt="image" src="https://github.com/user-attachments/assets/9529eeae-35bd-4c22-bba9-bc76a8078a21" />
 
-      - Rabu
+      - Rabu (Durin)
         ```
         #!/bin/bash
         
