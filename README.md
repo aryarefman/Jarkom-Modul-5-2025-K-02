@@ -2927,9 +2927,19 @@ Agar jaringan aman, terapkan aturan firewall berikut.
       #    → posisi 3 = connlimit, posisi 4 = ACCEPT normal
       iptables -I INPUT 3 -p tcp --dport 80 -m connlimit --connlimit-above 3 --connlimit-mask 32 -j REJECT --reject-with tcp-reset
       iptables -I INPUT 4 -p tcp --dport 80 -j ACCEPT
-
+      
       echo "============================================================"
-      echo "Selesai"
+      echo "SELESAI"
+      echo ""
+      echo "Status sekarang:"
+      echo "• Rule 4 (Weekend Only) → TETAP HIDUP & UTUH"
+      echo "• Rule 7 (Max 3 koneksi per IP) → AKTIF dengan TCP Reset"
+      echo ""
+      echo "Urutan penting di INPUT chain:"
+      iptables -L INPUT -n -v --line-numbers | grep -E "(80|connlimit|REJECT|ACCEPT|time|Sat|Sun|DROP)"
+      echo ""
+      echo "============================================================"
+      echo "Completed"
       echo "============================================================"
       ```
       
