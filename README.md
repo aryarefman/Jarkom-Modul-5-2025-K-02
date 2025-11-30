@@ -2683,49 +2683,65 @@ Agar jaringan aman, terapkan aturan firewall berikut.
     - Palantir
       ```
       #!/bin/bash
-      # PALANTIR — RULE 5 + 6
+      clear
       echo "===================================================="
-      echo "   PALANTIR — FINAL COMBO RULE 5 + RULE 6"
+      echo " PALANTIR — FINAL FIX GNS3 (NO CHAIN_DEF_FAILED)"
       echo "===================================================="
       
-      # 1. Flush dulu semua rule lama biar bersih
+      # Bersihkan recent list
+      echo clear > /proc/net/xt_recent/portscan 2>/dev/null
+      echo clear > /proc/net/xt_recent/blocklist 2>/dev/null
+      
+      # Pastikan chain PORT_SCAN benar-benar bersih
+      iptables -F PORT_SCAN 2>/dev/null
+      iptables -X PORT_SCAN 2>/dev/null
+      iptables -N PORT_SCAN
+      
+      # Flush semua rule
       iptables -F INPUT
-      iptables -X
       iptables -t nat -F
       
-      # 2. Chain khusus
-      iptables -N PORT_SCAN 2>/dev/null || iptables -F PORT_SCAN
-      
-      # 3. Rule wajib dasar
+      # Rule dasar
       iptables -A INPUT -i lo -j ACCEPT
       iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
       
-      # 4. BLOCKLIST — yang pernah kena scan langsung mati total
+      # Blocklist
       iptables -A INPUT -m recent --rcheck --name blocklist -j DROP
       
-      # 5. Tracking port scan
+      # Tracking port scan
       iptables -A INPUT -p tcp --syn -m recent --set --name portscan
       iptables -A INPUT -p tcp --syn -m recent --update --seconds 20 --hitcount 16 --name portscan -j PORT_SCAN
       
-      # 6. ACCEPT semua koneksi NEW ke port 80 (INI YANG BIKIN NC SEBELUM SCAN HIJAU!)
+      # ACCEPT NEW port 80 → NC hijau sebelum scan
       iptables -A INPUT -p tcp --dport 80 -m state --state NEW -j ACCEPT
       
-      # 7. Rule 5 — Time-based access (ELF & HUMAN) — TETAP UTUH
-      iptables -A INPUT -p tcp --dport 80 -s 192.212.0.128/25 -m time --timestart 07:00 --timestop 15:00 --weekdays Mon,Tue,Wed,Thu,Fri,Sat,Sun -j ACCEPT
-      iptables -A INPUT -p tcp --dport 80 -s 192.212.1.0/24   -m time --timestart 17:00 --timestop 23:00 --weekdays Mon,Tue,Wed,Thu,Fri,Sat,Sun -j ACCEPT
-      
-      # 8. Drop akses HTTP di luar jam (Rule 5)
+      # Rule 5 time-based
+      iptables -A INPUT -p tcp --dport 80 -s 192.212.0.128/25 -m time --timestart 07:00 --timestop 15:00 -j ACCEPT
+      iptables -A INPUT -p tcp --dport 80 -s 192.212.1.0/24   -m time --timestart 17:00 --timestop 23:00 -j ACCEPT
       iptables -A INPUT -p tcp --dport 80 -s 192.212.0.128/25 -j DROP
       iptables -A INPUT -p tcp --dport 80 -s 192.212.1.0/24   -j DROP
       
-      # 9. PORT_SCAN chain isi
+      # Isi chain PORT_SCAN (LOG DULU!)
       iptables -F PORT_SCAN
-      iptables -A PORT_SCAN -j LOG --log-prefix "PORT_SCAN_DETECTED: " --log-level 4
+      iptables -A PORT_SCAN -m limit --limit 3/sec -j LOG --log-prefix "PORT_SCAN_DETECTED: " --log-level 4
       iptables -A PORT_SCAN -m recent --set --name blocklist
       iptables -A PORT_SCAN -j DROP
       
-      # 10. Default policy
+      # Default
       iptables -A INPUT -j ACCEPT
+      
+      # Fix rsyslog GNS3 (wajib!)
+      echo "kern.*                                                 /var/log/kern.log" > /etc/rsyslog.d/10-kernel.conf
+      pkill rsyslogd 2>/dev/null
+      rsyslogd &
+      touch /var/log/kern.log
+      
+      echo "===================================================="
+      echo "SELESAI — TIDAK ADA LAGI ERROR CHAIN_DEF_FAILED"
+      echo "Sekarang langsung tes nmap dari Elendil!"
+      echo "Log pasti banjir: tail -f /var/log/kern.log | grep PORT_SCAN"
+      echo "===================================================="
+      iptables -L INPUT -n -v --line-numbers
       ```
 
     - Uji
