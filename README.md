@@ -3148,16 +3148,6 @@ Agar jaringan aman, terapkan aturan firewall berikut.
         fi
         
         echo ""
-        echo "Test 2: Ping to Durin"
-        echo "-------------------------------------"
-        timeout 5 ping -c 3 192.212.0.66
-        if [ $? -ne 0 ]; then
-            echo "✓ Durin: BLOCKED"
-        else
-            echo "✗ Durin: NOT BLOCKED"
-        fi
-        
-        echo ""
         echo "Test 3: Ping to IronHills"
         echo "-------------------------------------"
         timeout 5 ping -c 3 192.212.0.18
@@ -3201,4 +3191,3 @@ Agar jaringan aman, terapkan aturan firewall berikut.
         echo "✓ The traitor is imprisoned in Barad-dûr!"
         echo "========================================="
         ```
-        <img width="507" height="651" alt="image" src="https://github.com/user-attachments/assets/eb669341-6f50-45a1-8bd1-2ea51390a1f8" />
